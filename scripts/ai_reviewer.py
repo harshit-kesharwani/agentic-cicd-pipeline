@@ -4,7 +4,7 @@ import os
 from git import Repo
 import subprocess
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+OpenAI.api_key = os.getenv("OPENAI_API_KEY")
 repo = Repo(".")
 
 
