@@ -1,5 +1,6 @@
+from openai import OpenAI
 import os
-import openai
+
 from git import Repo
 import subprocess
 
@@ -24,14 +25,24 @@ def get_code_diff():
 
 
 def review_code(diff_text):
-    response = openai.ChatCompletion.create(
+    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+    response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
-            {"role": "system", "content": "You are a senior code reviewer. Review code diffs, provide a score (0-100), suggestions, and optionally improved code."},
-            {"role": "user", "content": f"Review this code diff:\n{diff_text}"}
+            {
+                "role": "system",
+                "content": "You are a senior code reviewer. Review code diffs, provide a score (0-100), suggestions, and optionally improved code."
+            },
+            {
+                "role": "user",
+                "content": f"Review this code diff:\n{diff_text}"
+            }
         ]
     )
-    return response['choices'][0]['message']['content']
+
+    return response.choices[0].message.content
+
 
 def main():
     diff = get_code_diff()
