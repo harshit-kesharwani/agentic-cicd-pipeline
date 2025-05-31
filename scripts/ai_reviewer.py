@@ -1,13 +1,27 @@
 import os
 import openai
 from git import Repo
+import subprocess
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 repo = Repo(".")
 
+
+
 def get_code_diff():
-    diff = repo.git.diff('HEAD~1')
-    return diff if diff else "No changes."
+    repo = Repo(".")
+    commits = list(repo.iter_commits('HEAD', max_count=2))
+    
+    if len(commits) < 2:
+        # If there's only one commit, get the whole file tree as "added"
+        diff = repo.git.diff('--staged')
+        if not diff:
+            diff = subprocess.run(['git', 'show'], capture_output=True, text=True).stdout
+    else:
+        diff = repo.git.diff('HEAD~1')
+        
+    return diff
+
 
 def review_code(diff_text):
     response = openai.ChatCompletion.create(
