@@ -23,4 +23,9 @@ jobs:
       - name: Run AI Review
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+          AZURE_OPENAI_ENDPOINT: https://harsh-mbc1im89-eastus2.cognitiveservices.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2025-01-01-preview
+          AZURE_OPENAI_DEPLOYMENT_NAME: gpt-4o-mini
+  # e.g., gpt-4-reviewer
+
         run: python scripts/ai_reviewer.py
