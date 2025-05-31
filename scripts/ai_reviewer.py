@@ -24,11 +24,18 @@ def get_code_diff():
     return diff
 
 
+import os
+from openai import AzureOpenAI
+
 def review_code(diff_text):
-    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    client = AzureOpenAI(
+        api_key=os.environ["AZURE_OPENAI_API_KEY"],
+        api_version="2024-02-15-preview",  # Use the correct API version you're working with
+        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"]
+    )
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],  # Deployment name, not model ID
         messages=[
             {
                 "role": "system",
@@ -42,6 +49,7 @@ def review_code(diff_text):
     )
 
     return response.choices[0].message.content
+
 
 
 def main():
